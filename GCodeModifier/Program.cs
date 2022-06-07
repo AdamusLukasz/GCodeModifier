@@ -8,9 +8,12 @@ namespace GCodeModifier
     {
         static void Main(string[] args)
         {
-            string text = "Lukasz";
-            string textFile = @"D:\P1.txt";
+            Console.Write("Get file path: ");
+            string textFile = Console.ReadLine();
+            Console.Write("Get changed file path: ");
+            string changedFile = Console.ReadLine();
             string[] lines = File.ReadAllLines(textFile);
+            List<string> newFile = new List<string>();
             var numberOfTLines = new List<int>();
             var listOfTLines = new List<string>();
 
@@ -27,7 +30,6 @@ namespace GCodeModifier
                     listOfTLines.Add(lines[i].Substring(indexOfT, indexOfSecondSpacebar));
                 }
             }
-  
             int count = 1;
             foreach (var item in lines)
             {
@@ -38,6 +40,10 @@ namespace GCodeModifier
                 if (item.Contains('T'))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
+                    newFile.Add(item);
+
+                    newFile.Add(listOfTLines[count]);
+
                     Console.WriteLine(item + "\n" + listOfTLines[count]);
                     Console.ForegroundColor = ConsoleColor.White;
                     count += 1;
@@ -45,8 +51,13 @@ namespace GCodeModifier
                 else
                 {
                     Console.WriteLine(item);
+                    newFile.Add(item);
+
                 }
+
             }
+
+            File.WriteAllLines(changedFile, newFile.ToArray());
         }
     }
 }
