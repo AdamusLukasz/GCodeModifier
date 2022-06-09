@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="gcode-tutorial-thumbnail.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GCodeModifier\GCodeModifier.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="gcode-tutorial-thumbnail.png" />
+  </ItemGroup>
+
+</Project>
