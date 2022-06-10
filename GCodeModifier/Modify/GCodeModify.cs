@@ -14,13 +14,11 @@ namespace GCodeModifier
             string[] readFile = File.ReadAllLines(path);
             return readFile;
         }
-
         public string[] ModifyFile(string[] file)
         {
             List<string> newFile = new List<string>();
             var numberOfTLines = new List<int>();
             var listOfTLines = new List<string>();
-
             for (int i = 0; i < file.Length; i++)
             {
                 if (file[i].Contains('T'))
@@ -43,26 +41,19 @@ namespace GCodeModifier
                 }
                 if (item.Contains('T'))
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    //Console.ForegroundColor = ConsoleColor.Red;
                     newFile.Add(item);
-
                     newFile.Add(listOfTLines[count]);
-
-                    Console.WriteLine(item + "\n" + listOfTLines[count]);
-                    Console.ForegroundColor = ConsoleColor.White;
+                    //Console.WriteLine(item + "\n" + listOfTLines[count]);
+                    //Console.ForegroundColor = ConsoleColor.White;
                     count += 1;
                 }
                 else
                 {
-                    Console.WriteLine(item);
+                    //Console.WriteLine(item);
                     newFile.Add(item);
-
                 }
-
             }
-
-
-
             return newFile.ToArray();
         }
     }

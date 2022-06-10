@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
 using GCodeModifier;
 
 namespace GCodeModifierUI
@@ -22,6 +23,31 @@ namespace GCodeModifierUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static string GetFilePath(string path, string fileName)
+        {
+            int indexOfBackSlash = 0;
+            for (int i = path.Length - 1; i > 0; i--)
+            {
+                if (path[i] == '\\')
+                {
+                    indexOfBackSlash = i;
+                    break;
+                }
+            }
+            string filePath = path.Remove(indexOfBackSlash + 1);
+            return filePath;
+        }
+        public static string RemoveExtensionFile(string fileName)
+        {
+            int indexOfDot = fileName.IndexOf('.');
+            string f = fileName.Remove(indexOfDot);
+            return f;
+        }
+        public static string ModifyFileName(string fileName)
+        {
+            string modifiedFileName = RemoveExtensionFile(fileName) + "_modify.min";
+            return modifiedFileName;
+        }
         public MainWindow()
         {
             InitializeComponent();
@@ -30,12 +56,12 @@ namespace GCodeModifierUI
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             // Configure open file dialog box
-            var dialog = new Microsoft.Win32.OpenFileDialog();
+            var dialog = new OpenFileDialog();
             GCodeModify gCodeModify = new GCodeModify();
             dialog.FileName = "Document"; // Default file name
-            dialog.DefaultExt = ".txt"; // Default file extension
-            dialog.Filter = "Text documents (.txt)|*.txt"; // Filter files by extension
-            dialog.InitialDirectory = @"D:\";
+            //dialog.DefaultExt = ".txt"; // Default file extension
+            dialog.Filter = "Text documents (.min)|*.min"; // Filter files by extension
+            //dialog.InitialDirectory = @"C:\";
 
             // Show open file dialog box
             bool? result = dialog.ShowDialog();
@@ -43,12 +69,12 @@ namespace GCodeModifierUI
             // Process open file dialog box results
             if (result == true)
             {
-                var file = gCodeModify.ReadFile("D:\\P1.txt");
+                string fileName = dialog.FileName;
+                string modifiedFileName = ModifyFileName(fileName);
+                var file = gCodeModify.ReadFile(fileName);
                 var modify = gCodeModify.ModifyFile(file);
-                // Open document
-                string filename = dialog.FileName;
-                File.WriteAllLines("D:\\P5.txt", modify);
-                textBox.Text = dialog.FileName;
+                File.WriteAllLines(modifiedFileName, modify);
+                textBox.Text = modifiedFileName;
             }
         }
 

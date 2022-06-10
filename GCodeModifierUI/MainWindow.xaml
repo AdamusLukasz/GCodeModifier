@@ -20,7 +20,7 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="134,41,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="230" RenderTransformOrigin="0.5,0.5">
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="134,41,0,0" TextWrapping="Wrap" Text="Result path" VerticalAlignment="Top" Width="230" RenderTransformOrigin="0.5,0.5">
             <TextBox.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform ScaleX="2" ScaleY="2"/>
