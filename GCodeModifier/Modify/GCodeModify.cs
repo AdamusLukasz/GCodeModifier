@@ -9,7 +9,7 @@ namespace GCodeModifier
 {
     public class GCodeModify
     {
-        public List<string> GetAllToolChanges(string path)
+        public List<string> GetListOfTools(string path)
         {
             string[] file = File.ReadAllLines(path);
             var listOfTools = new List<string>();
@@ -17,6 +17,10 @@ namespace GCodeModifier
             for (int j = 0; j < lengthOfFile; j++)
             {
                 var line = file[j];
+                if (line == String.Empty)
+                {
+                    continue;
+                }
                 char firstCharOfFileLine = line[0];
                 if (firstCharOfFileLine == '(')
                 {
@@ -33,13 +37,17 @@ namespace GCodeModifier
             }
             return listOfTools;
         }
-        public string[] PutToolChangesToFile(List<string> list, string[] file)
+        public string[] PutToolChangesToFile(List<string> listOfTools, string[] fileToModify)
         {
             List<string> newFile = new List<string>();
             int count = 1;
-            for (int i = 0; i < file.Length; i++)
+            for (int i = 0; i < fileToModify.Length; i++)
             {
-                var getLine = file[i];
+                var getLine = fileToModify[i];
+                if (getLine == String.Empty)
+                {
+                    continue;
+                }
                 char firstCharOfLine = getLine[0];
 
                 if (firstCharOfLine == '(')
@@ -49,16 +57,16 @@ namespace GCodeModifier
                 }
                 if (getLine.Contains('T'))
                 {
-                    if (count == list.Count)
+                    if (count == listOfTools.Count)
                     {
                         newFile.Add(getLine);
-                        newFile.Add(list[0]);
+                        newFile.Add(listOfTools[0]);
                         continue;
                     }
                     else
                     {
                         newFile.Add(getLine);
-                        newFile.Add(list[count]);
+                        newFile.Add(listOfTools[count]);
                         count += 1;
                         continue;
                     }

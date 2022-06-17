@@ -23,20 +23,6 @@ namespace GCodeModifierUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static string GetFilePath(string path, string fileName)
-        {
-            int indexOfBackSlash = 0;
-            for (int i = path.Length - 1; i > 0; i--)
-            {
-                if (path[i] == '\\')
-                {
-                    indexOfBackSlash = i;
-                    break;
-                }
-            }
-            string filePath = path.Remove(indexOfBackSlash + 1);
-            return filePath;
-        }
         public static string RemoveExtensionFile(string fileName)
         {
             int indexOfDot = fileName.IndexOf('.');
@@ -69,23 +55,14 @@ namespace GCodeModifierUI
             // Process open file dialog box results
             if (result == true)
             {
-                string fileName = dialog.FileName;
-                string modifiedFileName = ModifyFileName(fileName);
-                //var file = gCodeModify.ReadFile(fileName);
-                //var modify = gCodeModify.GetAllToolChanges(file);
-                //File.WriteAllLines(modifiedFileName, modify);
-                //textBox.Text = modifiedFileName;
+                //string fileName = dialog.FileName;
+                string modifiedFileName = ModifyFileName(dialog.FileName);
+                string[] readFile = File.ReadAllLines(dialog.FileName);
+                List<string> getListOfTools = gCodeModify.GetListOfTools(dialog.FileName);
+                string[] newFile = gCodeModify.PutToolChangesToFile(getListOfTools, readFile);
+                File.WriteAllLines(modifiedFileName, newFile);
+                textBox.Text = modifiedFileName;
             }
-        }
-
-        private void btnOpenFile_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }
