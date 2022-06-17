@@ -9,52 +9,64 @@ namespace GCodeModifier
 {
     public class GCodeModify
     {
-        public string[] ReadFile(string path)
+        public List<string> GetAllToolChanges(string path)
         {
-            string[] readFile = File.ReadAllLines(path);
-            return readFile;
-        }
-        public string[] ModifyFile(string[] file)
-        {
-            List<string> newFile = new List<string>();
-            var numberOfTLines = new List<int>();
-            var listOfTLines = new List<string>();
-            for (int i = 0; i < file.Length; i++)
+            string[] file = File.ReadAllLines(path);
+            var listOfTools = new List<string>();
+            int l = file.Length;
+            for (int j = 0; j < file.Length; j++)
             {
-                if (file[i].Contains('T'))
+                var line = file[j];
+                char firstCharOfFileLine = line[0];
+                if (firstCharOfFileLine == '(')
                 {
-                    numberOfTLines.Add(i);
-                    int lenghtOfLine = file[i].Length - 1;
-                    int indexOfFirstSpacebar = file[i].IndexOf(' ');
-                    string removeFirstSpacebar = file[i].Substring(indexOfFirstSpacebar + 1);
-                    int indexOfSecondSpacebar = removeFirstSpacebar.IndexOf(' ');
-                    int indexOfT = file[i].IndexOf('T');
-                    listOfTLines.Add(file[i].Substring(indexOfT, indexOfSecondSpacebar));
+                    continue;
                 }
+                if (line.Contains('T'))
+                {
+                    int indexOfT = file[j].IndexOf('T');
+                    int indexOfM = file[j].IndexOf('M');
+                    int length = indexOfM - indexOfT;
+                    string toolNumber = line.Substring(indexOfT, length);
+                    listOfTools.Add(toolNumber);
+                }
+                continue;
             }
-            int count = 1;
-            foreach (var item in file)
-            {
-                if (count == numberOfTLines.Count)
-                {
-                    count = 0;
-                }
-                if (item.Contains('T'))
-                {
-                    //Console.ForegroundColor = ConsoleColor.Red;
-                    newFile.Add(item);
-                    newFile.Add(listOfTLines[count]);
-                    //Console.WriteLine(item + "\n" + listOfTLines[count]);
-                    //Console.ForegroundColor = ConsoleColor.White;
-                    count += 1;
-                }
-                else
-                {
-                    //Console.WriteLine(item);
-                    newFile.Add(item);
-                }
-            }
-            return newFile.ToArray();
+            return listOfTools;
         }
+        //public string[] PutToolChangesToFile(List<string> list, string[] file)
+        //{
+        //    List<string> newFile = new List<string>();
+        //    int count = 1;
+
+        //    foreach (var item in list)
+        //    {
+        //        char c = item[0];
+        //        if (c == '(')
+        //        {
+        //            newFile.Add(item);
+        //            //continue;
+        //        }
+        //        if (count == listOfTools.Count)
+        //        {
+        //            count = 0;
+        //        }
+        //        if (item.Contains('T'))
+        //        {
+        //            Console.ForegroundColor = ConsoleColor.Red;
+        //            newFile.Add(item);
+        //            newFile.Add(listOfTools[count]);
+        //            Console.WriteLine(item + "\n" + listOfTools[count]);
+        //            Console.ForegroundColor = ConsoleColor.White;
+        //            count += 1;
+        //        }
+        //        else
+        //        {
+        //            //Console.WriteLine(item);
+        //            newFile.Add(item);
+        //        }
+        //    }
+        //    return newFile.ToArray();
+        //}
     }
 }

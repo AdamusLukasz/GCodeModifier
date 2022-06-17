@@ -72,7 +72,7 @@ namespace GCodeModifierUI
                 string fileName = dialog.FileName;
                 string modifiedFileName = ModifyFileName(fileName);
                 var file = gCodeModify.ReadFile(fileName);
-                var modify = gCodeModify.ModifyFile(file);
+                var modify = gCodeModify.GetAllToolChanges(file);
                 File.WriteAllLines(modifiedFileName, modify);
                 textBox.Text = modifiedFileName;
             }
