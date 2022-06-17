@@ -9,15 +9,12 @@ namespace GCodeModifier
     {
         static void Main(string[] args)
         {
-            Console.Write("Get file path: ");
-            string textFile = Console.ReadLine();
-            Console.Write("Get changed file path: ");
-            string changedFile = Console.ReadLine();
-
+            string textFile = "D:\\p1.min";
+            var read = File.ReadAllLines(textFile);
+            string changedFile = "D:\\p11.min";
             GCodeModify gCodeModify = new GCodeModify();
-            var file = gCodeModify.ReadFile(textFile);
-            var modify = gCodeModify.ModifyFile(file);
-
+            var list = gCodeModify.GetListOfTools(textFile);
+            var modify = gCodeModify.PutToolChangesToFile(list, read);
             File.WriteAllLines(changedFile, modify);
         }
     }

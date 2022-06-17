@@ -9,50 +9,69 @@ namespace GCodeModifier
 {
     public class GCodeModify
     {
-        public string[] ReadFile(string path)
+        public List<string> GetListOfTools(string path)
         {
-            string[] readFile = File.ReadAllLines(path);
-            return readFile;
-        }
-        public string[] ModifyFile(string[] file)
-        {
-            List<string> newFile = new List<string>();
-            var numberOfTLines = new List<int>();
-            var listOfTLines = new List<string>();
-            for (int i = 0; i < file.Length; i++)
+            string[] file = File.ReadAllLines(path);
+            var listOfTools = new List<string>();
+            int lengthOfFile = file.Length;
+            for (int j = 0; j < lengthOfFile; j++)
             {
-                if (file[i].Contains('T'))
+                var line = file[j];
+                if (line == String.Empty)
                 {
-                    numberOfTLines.Add(i);
-                    int lenghtOfLine = file[i].Length - 1;
-                    int indexOfFirstSpacebar = file[i].IndexOf(' ');
-                    string removeFirstSpacebar = file[i].Substring(indexOfFirstSpacebar + 1);
-                    int indexOfSecondSpacebar = removeFirstSpacebar.IndexOf(' ');
-                    int indexOfT = file[i].IndexOf('T');
-                    listOfTLines.Add(file[i].Substring(indexOfT, indexOfSecondSpacebar));
+                    continue;
+                }
+                char firstCharOfFileLine = line[0];
+                if (firstCharOfFileLine == '(')
+                {
+                    continue;
+                }
+                if (line.Contains('T'))
+                {
+                    int indexOfT = file[j].IndexOf('T');
+                    int indexOfM = file[j].IndexOf('M');
+                    int length = indexOfM - indexOfT;
+                    string toolNumber = line.Substring(indexOfT, length);
+                    listOfTools.Add(toolNumber);
                 }
             }
+            return listOfTools;
+        }
+        public string[] PutToolChangesToFile(List<string> listOfTools, string[] fileToModify)
+        {
+            List<string> newFile = new List<string>();
             int count = 1;
-            foreach (var item in file)
+            for (int i = 0; i < fileToModify.Length; i++)
             {
-                if (count == numberOfTLines.Count)
+                var getLine = fileToModify[i];
+                if (getLine == String.Empty)
                 {
-                    count = 0;
+                    continue;
                 }
-                if (item.Contains('T'))
+                char firstCharOfLine = getLine[0];
+
+                if (firstCharOfLine == '(')
                 {
-                    //Console.ForegroundColor = ConsoleColor.Red;
-                    newFile.Add(item);
-                    newFile.Add(listOfTLines[count]);
-                    //Console.WriteLine(item + "\n" + listOfTLines[count]);
-                    //Console.ForegroundColor = ConsoleColor.White;
-                    count += 1;
+                    newFile.Add(getLine);
+                    continue;
                 }
-                else
+                if (getLine.Contains('T'))
                 {
-                    //Console.WriteLine(item);
-                    newFile.Add(item);
+                    if (count == listOfTools.Count)
+                    {
+                        newFile.Add(getLine);
+                        newFile.Add(listOfTools[0]);
+                        continue;
+                    }
+                    else
+                    {
+                        newFile.Add(getLine);
+                        newFile.Add(listOfTools[count]);
+                        count += 1;
+                        continue;
+                    }
                 }
+                newFile.Add(getLine);
             }
             return newFile.ToArray();
         }
