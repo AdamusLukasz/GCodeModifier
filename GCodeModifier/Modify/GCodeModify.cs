@@ -13,8 +13,8 @@ namespace GCodeModifier
         {
             string[] file = File.ReadAllLines(path);
             var listOfTools = new List<string>();
-            int l = file.Length;
-            for (int j = 0; j < file.Length; j++)
+            int lengthOfFile = file.Length;
+            for (int j = 0; j < lengthOfFile; j++)
             {
                 var line = file[j];
                 char firstCharOfFileLine = line[0];
@@ -30,43 +30,42 @@ namespace GCodeModifier
                     string toolNumber = line.Substring(indexOfT, length);
                     listOfTools.Add(toolNumber);
                 }
-                continue;
             }
             return listOfTools;
         }
-        //public string[] PutToolChangesToFile(List<string> list, string[] file)
-        //{
-        //    List<string> newFile = new List<string>();
-        //    int count = 1;
+        public string[] PutToolChangesToFile(List<string> list, string[] file)
+        {
+            List<string> newFile = new List<string>();
+            int count = 1;
+            for (int i = 0; i < file.Length; i++)
+            {
+                var getLine = file[i];
+                char firstCharOfLine = getLine[0];
 
-        //    foreach (var item in list)
-        //    {
-        //        char c = item[0];
-        //        if (c == '(')
-        //        {
-        //            newFile.Add(item);
-        //            //continue;
-        //        }
-        //        if (count == listOfTools.Count)
-        //        {
-        //            count = 0;
-        //        }
-        //        if (item.Contains('T'))
-        //        {
-        //            Console.ForegroundColor = ConsoleColor.Red;
-        //            newFile.Add(item);
-        //            newFile.Add(listOfTools[count]);
-        //            Console.WriteLine(item + "\n" + listOfTools[count]);
-        //            Console.ForegroundColor = ConsoleColor.White;
-        //            count += 1;
-        //        }
-        //        else
-        //        {
-        //            //Console.WriteLine(item);
-        //            newFile.Add(item);
-        //        }
-        //    }
-        //    return newFile.ToArray();
-        //}
+                if (firstCharOfLine == '(')
+                {
+                    newFile.Add(getLine);
+                    continue;
+                }
+                if (getLine.Contains('T'))
+                {
+                    if (count == list.Count)
+                    {
+                        newFile.Add(getLine);
+                        newFile.Add(list[0]);
+                        continue;
+                    }
+                    else
+                    {
+                        newFile.Add(getLine);
+                        newFile.Add(list[count]);
+                        count += 1;
+                        continue;
+                    }
+                }
+                newFile.Add(getLine);
+            }
+            return newFile.ToArray();
+        }
     }
 }

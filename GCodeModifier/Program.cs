@@ -10,6 +10,7 @@ namespace GCodeModifier
         static void Main(string[] args)
         {
             string textFile = "D:\\p1.min";
+            var read = File.ReadAllLines(textFile);
             string changedFile = "D:\\p11.min";
             //Console.Write("Get file path: ");
             //string textFile = Console.ReadLine();
@@ -19,15 +20,20 @@ namespace GCodeModifier
             GCodeModify gCodeModify = new GCodeModify();
 
             var a = gCodeModify.GetAllToolChanges(textFile);
-            var b = a.ToArray();
+            var b = gCodeModify.PutToolChangesToFile(a, read);
 
-            //a.ForEach(Console.WriteLine);
-
-
-            for (int i = 0; i < a.Count; i++)
+            foreach (var item in b)
             {
-                Console.WriteLine(a[i]);
+                Console.WriteLine(b);
             }
+
+            var c = b.ToString();
+
+            foreach (var item in c)
+            {
+                Console.WriteLine(c);
+            }
+
             //var file = gCodeModify.ReadFile(textFile);
             //var modify = gCodeModify.ModifyFile(file);
 
